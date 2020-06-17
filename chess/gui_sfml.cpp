@@ -2,8 +2,8 @@
 
 Gui_sfml::Gui_sfml()
 {
-	window.create(VideoMode(1024, 768), "Chess (C++ with SFML)", Style::Close);
-	texture.loadFromFile("resource/board.jpg");
+	window.create(VideoMode(WIDTH, HEIGHT), "Chess (C++ with SFML)", Style::Close);
+	texture.loadFromFile("resource/pieces.png");
 	sprite.setTexture(texture);
 	sprite.setPosition(147, 0);
 	while (window.isOpen())
@@ -14,7 +14,7 @@ Gui_sfml::Gui_sfml()
 				window.close();
 		}
 
-		window.clear(Color(255, 255, 255));
+		window.clear(Color(0, 255, 255));
 		window.draw(sprite);
 		window.display();
 	}
