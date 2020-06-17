@@ -4,7 +4,7 @@ Rook::Rook() {}
 
 Rook::~Rook() {}
 
-bool Rook::move_to(int x, int y)
+bool Rook::move_to(int x, int y) const
 {
 	return (getX() == x || getY() == y);
 }

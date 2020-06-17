@@ -7,7 +7,7 @@ class King : public IPiece
 public:
 	King();
 	~King();
-	bool move_to(int x, int y);
+	bool move_to(int x, int y) const;
 
 private:
 

@@ -8,14 +8,14 @@ public:
 	IPiece() = default;
 	virtual ~IPiece() = default;
 
-	virtual bool move_to(int x, int y) = 0;
+	virtual bool move_to(int x, int y) const = 0;
 
 	void setX(int a) { x = a; }
 	void setY(int a) { y = a; }
-	int getX() { return x; }
-	int getY() { return y; }
+	int getX() const { return x; }
+	int getY() const { return y; }
 	void setPlayer(bool frs) { first_player = frs; }
-	bool getPlayer() { return first_player; }
+	bool getPlayer() const { return first_player; }
 
 private:
 	int x = 0;
@@ -26,5 +26,5 @@ private:
 
 struct Space
 {
-	IPiece *cell;
+	IPiece *cell = nullptr;
 };
