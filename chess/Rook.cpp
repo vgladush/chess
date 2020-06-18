@@ -1,15 +1,15 @@
 #include "Rook.h"
 
-Rook::Rook() {}
+Rook::Rook(bool player) : IPiece(player) {}
 
 Rook::~Rook() {}
 
-bool Rook::move_to(int x, int y) const
+bool Rook::move_to(int x, int y, int xp, int yp) const
 {
-	return (getX() == x || getY() == y);
+	return (xp == x || yp == y);
 }
 
-bool Rook::to_take(int x, int y) const
+bool Rook::to_take(int x, int y, int xp, int yp) const
 {
-	return (getX() == x || getY() == y);
+	return (xp == x || yp == y);
 }

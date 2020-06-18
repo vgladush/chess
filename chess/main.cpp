@@ -1,8 +1,9 @@
-
 #include "chess.h"
 
 int main()
 {
-	Gui_sfml ff;
+	Chess chess;
+	chess.game();
+
 	return 0;
 }

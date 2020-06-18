@@ -10,14 +10,17 @@
 class Space
 {
 public:
-	Space();
+	Space(IPiece* piece = nullptr);
 	~Space();
-	template<IPiece*piece>
-	bool chek_take(int x, int y) const;
-	template<IPiece* piece>
-	bool check_way(int x, int y) const;
+
+	bool chek_take(int x, int y, int xp, int yp) const; //
+	bool check_way(int x, int y, int xp, int yp)const; //free path to the goal
+	void setPiece(IPiece* cell);
+	IPiece *getPiece();
 
 private:
-	IPiece* cell[8][8];
+	void clear();
+
+	IPiece* cell;
 
 };

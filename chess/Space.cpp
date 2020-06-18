@@ -1,6 +1,6 @@
 #include "Space.h"
 
-Space::Space()
+Space::Space(IPiece* piece) : cell(piece)
 {
 }
 
@@ -8,14 +8,28 @@ Space::~Space()
 {
 }
 
-template<IPiece* piece>
-bool Space::chek_take(int x, int y) const
+void Space::clear()
+{
+    if (cell)
+        delete cell;
+}
+
+bool Space::chek_take(int x, int y, int xp, int yp) const
 {
     return false;
 }
 
-template<IPiece* piece>
-bool Space::check_way(int x, int y) const
+bool Space::check_way(int x, int y, int xp, int yp) const
 {
     return false;
+}
+
+void Space::setPiece(IPiece* cl)
+{
+    cell = cl;
+}
+
+IPiece *Space::getPiece()
+{
+    return cell;
 }
