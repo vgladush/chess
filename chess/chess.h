@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Space.h"
 #include "gui_sfml.h"
-#include "King.h"
 
 class Chess
 {

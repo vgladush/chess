@@ -9,3 +9,9 @@ bool Queen::move_to(int x, int y) const
 	return (abs(getX() - x) == abs(getY() - y)
 		|| getX() == x || getY() == y);
 }
+
+bool Queen::to_take(int x, int y) const
+{
+	return (abs(getX() - x) == abs(getY() - y)
+		|| getX() == x || getY() == y);
+}
