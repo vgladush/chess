@@ -1,6 +1,6 @@
 #include "Pawn.h"
 
-Pawn::Pawn(bool player) : IPiece(player) {}
+Pawn::Pawn(bool player) : IPiece(player, Name::pawn) {}
 
 Pawn::~Pawn() {}
 

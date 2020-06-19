@@ -1,6 +1,6 @@
 #include "Bishop.h"
 
-Bishop::Bishop(bool player) : IPiece(player) {}
+Bishop::Bishop(bool player) : IPiece(player, Name::bishop) {}
 
 Bishop::~Bishop() {}
 

@@ -1,6 +1,6 @@
 #include "Rook.h"
 
-Rook::Rook(bool player) : IPiece(player) {}
+Rook::Rook(bool player) : IPiece(player, Name::rook) {}
 
 Rook::~Rook() {}
 

@@ -1,6 +1,6 @@
 #include "Queen.h"
 
-Queen::Queen(bool player) : IPiece(player) {}
+Queen::Queen(bool player) : IPiece(player, Name::queen) {}
 
 Queen::~Queen() {}
 

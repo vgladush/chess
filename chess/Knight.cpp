@@ -1,6 +1,6 @@
 #include "Knight.h"
 
-Knight::Knight(bool player) : IPiece(player) {}
+Knight::Knight(bool player) : IPiece(player, Name::knight) {}
 
 Knight::~Knight() {}
 

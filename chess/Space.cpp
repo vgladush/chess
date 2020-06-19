@@ -1,17 +1,17 @@
 #include "Space.h"
 
-Space::Space(IPiece* piece) : cell(piece)
-{
-}
+Space::Space(IPiece* piece) : cell(piece) { }
 
 Space::~Space()
 {
+    clear();
 }
 
 void Space::clear()
 {
     if (cell)
         delete cell;
+    cell = nullptr;
 }
 
 bool Space::chek_take(int x, int y, int xp, int yp) const

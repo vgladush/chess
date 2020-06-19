@@ -1,6 +1,6 @@
 #include "King.h"
 
-King::King(bool player) : IPiece(player) {}
+King::King(bool player) : IPiece(player, Name::king) {}
 
 King::~King() {}
 
