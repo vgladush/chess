@@ -4,12 +4,12 @@ Bishop::Bishop(bool player) : IPiece(player, Name::bishop) {}
 
 Bishop::~Bishop() {}
 
-bool Bishop::move_to(int x, int y, int xp, int yp) const
+bool Bishop::move_to(Coord& cd) const
 {
-	return (abs(xp - x) == abs(yp - y));
+	return (abs(cd.i - cd.x) == abs(cd.j - cd.y));
 }
 
-bool Bishop::to_take(int x, int y, int xp, int yp) const
+bool Bishop::to_take(Coord& cd) const
 {
-	return move_to(x, y, xp, yp);
+	return move_to(cd);
 }

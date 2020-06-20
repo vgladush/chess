@@ -4,13 +4,13 @@ Knight::Knight(bool player) : IPiece(player, Name::knight) {}
 
 Knight::~Knight() {}
 
-bool Knight::move_to(int x, int y, int xp, int yp) const
+bool Knight::move_to(Coord& cd) const
 {
-	return ((abs(xp - x) == 2 && abs(yp - y) == 1) ||
-		(abs(xp - x) == 1 && abs(yp - y) == 2));
+	return ((abs(cd.i - cd.x) == 2 && abs(cd.j - cd.y) == 1) ||
+		(abs(cd.i - cd.x) == 1 && abs(cd.j - cd.y) == 2));
 }
 
-bool Knight::to_take(int x, int y, int xp, int yp) const
+bool Knight::to_take(Coord& cd) const
 {
-	return move_to(x, y, xp, yp);
+	return move_to(cd);
 }

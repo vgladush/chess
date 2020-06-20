@@ -7,7 +7,7 @@
 constexpr int SIZE = 333;
 constexpr int WHITE = 0;
 constexpr int BLACK = 333;
-constexpr float GRID = 73.6;
+constexpr float GRID = 74;
 constexpr int WIDTH = 1024;
 constexpr int HEIGHT = 800;
 constexpr float INDENT = 54;
@@ -21,18 +21,15 @@ public:
 	Gui_sfml();
 	~Gui_sfml();
 
-	bool draw_board(Space space[8][8], int &x, int &y, int &xp, int &yp, bool &help, std::string &err);
+	Game draw_board(Space space[8][8], Coord& cd, std::string &err); //main method
 
 private:
-	void draw_help(Space& space, int x, int y);
-	void draw_space(IPiece* piece, int x, int y);
+	void draw_help(Space& space, int x, int y); //if help turned on
+	void draw_space(IPiece* piece, Coord& crd); //chessboard display
 
 	RenderWindow window;
-	Texture texture;
-	Texture t_board;
-	Sprite sp_board;
-	Sprite sprite;
-	Vector2i v2i;
-	bool hold;
-	int mvx, mvy;
+	Texture texture, t_board, t_help; //texture for space and other, separate texture for background and helper
+	Sprite sprite, sp_board, sp_help; //sprite for space and other, separate sprite for background and helper
+	Vector2i v2i; //for pulling out coordinates
+	bool hold, help; //pressed left mouse key, help turn on
 };

@@ -4,12 +4,12 @@ King::King(bool player) : IPiece(player, Name::king) {}
 
 King::~King() {}
 
-bool King::move_to(int x, int y, int xp, int yp) const
+bool King::move_to(Coord& cd) const
 {
-	return (abs(xp - x) <= 1 && abs(yp - y) <= 1);
+	return (abs(cd.i - cd.x) <= 1 && abs(cd.j - cd.y) <= 1);
 }
 
-bool King::to_take(int x, int y, int xp, int yp) const
+bool King::to_take(Coord& cd) const
 {
-	return move_to(x, y, xp, yp);
+	return move_to(cd);
 }

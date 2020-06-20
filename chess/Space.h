@@ -10,9 +10,18 @@
 enum class Move
 {
 	free, // can't move to space (not within reach)
-	bit, // can bit
+	beat, // can beat
 	empty, //can move
 	stay // the piece that begins move
+};
+
+enum class Game
+{
+	helper, // help, turn on or turn off
+	hold, // start move 
+	relesed, //end move
+	clear, // clear helper
+	exit //game over
 };
 
 class Space
@@ -28,7 +37,7 @@ public:
 
 private:
 
-	IPiece* cell;
-	Move move;
+	IPiece* cell; //is there a piece on the checkerboard cell
+	Move move; //cell status
 
 };

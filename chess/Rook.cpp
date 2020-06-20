@@ -4,12 +4,12 @@ Rook::Rook(bool player) : IPiece(player, Name::rook) {}
 
 Rook::~Rook() {}
 
-bool Rook::move_to(int x, int y, int xp, int yp) const
+bool Rook::move_to(Coord& cd) const
 {
-	return (xp == x || yp == y);
+	return (cd.i == cd.x || cd.j == cd.y);
 }
 
-bool Rook::to_take(int x, int y, int xp, int yp) const
+bool Rook::to_take(Coord& cd) const
 {
-	return move_to(x, y, xp, yp);
+	return move_to(cd);
 }

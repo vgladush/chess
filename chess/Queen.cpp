@@ -4,13 +4,13 @@ Queen::Queen(bool player) : IPiece(player, Name::queen) {}
 
 Queen::~Queen() {}
 
-bool Queen::move_to(int x, int y, int xp, int yp) const
+bool Queen::move_to(Coord& cd) const
 {
-	return (abs(xp - x) == abs(yp - y)
-		|| xp == x || yp == y);
+	return (abs(cd.i - cd.x) == abs(cd.j - cd.y)
+		|| cd.i == cd.x || cd.j == cd.y);
 }
 
-bool Queen::to_take(int x, int y, int xp, int yp) const
+bool Queen::to_take(Coord& cd) const
 {
-	return move_to(x, y, xp, yp);
+	return move_to(cd);
 }
