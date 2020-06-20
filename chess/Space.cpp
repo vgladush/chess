@@ -1,27 +1,22 @@
 #include "Space.h"
 
-Space::Space(IPiece* piece) : cell(piece) { }
+Space::Space(IPiece* piece) : cell(piece), move(Move::free) { }
 
 Space::~Space()
-{
-    clear();
-}
-
-void Space::clear()
 {
     if (cell)
         delete cell;
     cell = nullptr;
 }
 
-bool Space::chek_take(int x, int y, int xp, int yp) const
+void Space::setMove(Move mv)
 {
-    return false;
+    move = mv;
 }
 
-bool Space::check_way(int x, int y, int xp, int yp) const
+Move Space::getMove()
 {
-    return false;
+    return move;
 }
 
 void Space::setPiece(IPiece* cl)

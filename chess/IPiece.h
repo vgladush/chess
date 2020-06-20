@@ -2,7 +2,6 @@
 
 #include <cmath>
 
-
 enum class Name
 {
 	king = 0,
@@ -17,7 +16,7 @@ class IPiece
 {
 public:
 
-	IPiece(bool player, Name tp) { first_player = player; type = tp;  }
+	IPiece(bool player, Name tp) { first_player = player; type = tp; }
 	virtual ~IPiece() = default;
 
 	virtual bool move_to(int x, int y, int xp, int yp) const = 0; //check, can move

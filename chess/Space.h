@@ -7,20 +7,28 @@
 #include "Queen.h"
 #include "Rook.h"
 
+enum class Move
+{
+	free, // can't move to space (not within reach)
+	bit, // can bit
+	empty, //can move
+	stay // the piece that begins move
+};
+
 class Space
 {
 public:
 	Space(IPiece* piece = nullptr);
 	~Space();
 
-	bool chek_take(int x, int y, int xp, int yp) const; //
-	bool check_way(int x, int y, int xp, int yp)const; //free path to the goal
+	void setMove(Move mv);
+	Move getMove();
 	void setPiece(IPiece* cell);
 	IPiece *getPiece();
 
 private:
-	void clear();
 
 	IPiece* cell;
+	Move move;
 
 };

@@ -12,6 +12,5 @@ bool Queen::move_to(int x, int y, int xp, int yp) const
 
 bool Queen::to_take(int x, int y, int xp, int yp) const
 {
-	return (abs(xp - x) == abs(yp - y)
-		|| xp == x || yp == y);
+	return move_to(x, y, xp, yp);
 }

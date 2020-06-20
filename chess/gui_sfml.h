@@ -7,11 +7,11 @@
 constexpr int SIZE = 333;
 constexpr int WHITE = 0;
 constexpr int BLACK = 333;
-constexpr int GRID = 74;
+constexpr float GRID = 73.6;
 constexpr int WIDTH = 1024;
-constexpr int HEIGHT = 768;
-constexpr int TOP = 54;
-constexpr int LEFT = 201;
+constexpr int HEIGHT = 800;
+constexpr float INDENT = 54;
+constexpr float IND = 58.45;
 
 using namespace sf;
 
@@ -21,9 +21,10 @@ public:
 	Gui_sfml();
 	~Gui_sfml();
 
-	void draw_board(Space space[8][8], int &x, int &y, int &xp, int &yp);
+	bool draw_board(Space space[8][8], int &x, int &y, int &xp, int &yp, bool &help, std::string &err);
 
 private:
+	void draw_help(Space& space, int x, int y);
 	void draw_space(IPiece* piece, int x, int y);
 
 	RenderWindow window;

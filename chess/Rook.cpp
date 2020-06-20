@@ -11,5 +11,5 @@ bool Rook::move_to(int x, int y, int xp, int yp) const
 
 bool Rook::to_take(int x, int y, int xp, int yp) const
 {
-	return (xp == x || yp == y);
+	return move_to(x, y, xp, yp);
 }
