@@ -2,25 +2,38 @@
 #include "Space.h"
 #include <iostream>
 
-Gui_sfml::Gui_sfml() : hold(false), help(false)
+Gui_sfml::Gui_sfml() : hold(false), help(false), volume(false)
 {
 	window.create(VideoMode(WIDTH, HEIGHT), "Chess (C++ with SFML)", Style::Close);
+
 	t_board.loadFromFile("resource/board.jpg"); //loading background
 	sp_board.setTexture(t_board);
+	hint.setTexture(t_board);
+	hint.setTextureRect(IntRect(60, 60, GRID * 2 - 2, GRID - 5));
+
 	t_help.loadFromFile("resource/helper.png"); //loading toggle button
 	sp_help.setTexture(t_help);
-	sp_help.scale(0.180f, 0.180f); //the size of the toggle button relative to the picture
-	sp_help.setPosition(730, 150);
-	sp_help.setTextureRect(IntRect(90, 990, 1480, 570));
+	sp_help.scale(0.135f, 0.135f); //the size of the toggle button relative to the picture
+	sp_help.setPosition(750, 195);
+
 	texture.loadFromFile("resource/pieces.png"); //loading of a picture of pieces for their further cutting
 	sprite.setTexture(texture);
 	sprite.scale(0.240f, 0.240f); //the size of the piece relative to the picture
+
+	t_voice.loadFromFile("resource/voice.png"); // loading valume image
+	sp_voice.setTexture(t_voice);
+	sp_voice.setPosition(792, 24);
+
+	c_keep = { 210, 150, 0, 90 };
+	c_move = { 60, 180, 180, 90 };
+	c_beat = { 240, 90, 150, 90 };
 }
 
 Gui_sfml::~Gui_sfml() { }
 
 Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 {
+
 	while (window.isOpen())
 	{
 		Event event;
@@ -47,12 +60,10 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 					if (sp_help.getGlobalBounds().contains(v2i.x, v2i.y))
 					{
 						help = !help;
-						if (help)
-							sp_help.setTextureRect(IntRect(90, 50, 1480, 570));
-						else
-							sp_help.setTextureRect(IntRect(90, 990, 1480, 570));
 						return Game::helper;
 					}
+					if (sp_voice.getGlobalBounds().contains(v2i.x, v2i.y))
+						volume = !volume;
 				}
 			}
 			if (event.type == Event::MouseButtonReleased) // if released:
@@ -72,7 +83,7 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 		}
 		window.clear(Color(210, 210, 210)); //background color
 		window.draw(sp_board); //background image
-		window.draw(sp_help); //help toggle button
+		right_banner(); //help toggle button
 		Coord ext{ cd.x, cd.y };
 		for (int i = 0; i < 8; ++i)
 		{
@@ -89,8 +100,8 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 		ext = { cd.x, cd.y, cd.x, cd.y };
 		if (hold) //layer on top
 			draw_space(space[cd.x][cd.y].getPiece(), ext);
-		//if (err.length())
-			//std::cout << err << std::endl;
+		if (err.length())
+			std::cout << err << std::endl;
 		window.display();
 	}
 	return Game::exit;
@@ -102,11 +113,11 @@ void Gui_sfml::draw_help(Space& space, int x, int y)
 	RectangleShape rect(Vector2f(GRID, GRID));
 	rect.setPosition(IND + GRID * x, IND + GRID * y);
 	if (space.getMove() == Move::beat)
-		rect.setFillColor(Color(240, 90, 150, 90));
+		rect.setFillColor(c_beat);
 	else if (space.getMove() == Move::stay)
-		rect.setFillColor(Color(210, 150, 0, 90));
+		rect.setFillColor(c_keep);
 	else
-		rect.setFillColor(Color(60, 180, 180, 90));
+		rect.setFillColor(c_move);
 	window.draw(rect);
 }
 
@@ -121,4 +132,37 @@ void Gui_sfml::draw_space(IPiece* piece, Coord& crd)
 	else // standing piece
 		sprite.setPosition(INDENT + GRID * crd.i, INDENT + GRID * crd.j);
 	window.draw(sprite);
+}
+
+void Gui_sfml::right_banner()
+{
+	sp_voice.setTextureRect(IntRect(0, 0, (volume ? 120 : 65), 122));
+	window.draw(sp_voice);
+	sp_help.setTextureRect(IntRect(90, (help ? 50 : 990), 1480, 570));
+	window.draw(sp_help);
+
+	hint.setPosition(780, 345);
+	window.draw(hint);
+	hint.setPosition(780, 490);
+	window.draw(hint);
+	hint.setPosition(780, 635);
+	window.draw(hint);
+
+	if (help)
+	{
+		RectangleShape rect(Vector2f(GRID * 2 - 2, GRID - 5));
+		rect.setFillColor(c_keep);
+		rect.setPosition(780, 345);
+		window.draw(rect);
+		rect.setFillColor(c_move);
+		rect.setPosition(780, 490);
+		window.draw(rect);
+		rect.setFillColor(c_beat);
+		rect.setPosition(780, 635);
+		window.draw(rect);
+	}
+}
+
+void Gui_sfml::status_bar()
+{
 }

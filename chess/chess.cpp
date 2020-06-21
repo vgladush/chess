@@ -42,9 +42,9 @@ bool Chess::check_way()
 	{
 		//check whether the piece can walk like that
 		error = "this piece can't move like that";
-		if (space[cd.x][cd.y].getPiece()->getName() != Name::pawn || ((passant.x == cd.i //if not a pawn
-			&& passant.y == cd.j || passant.i == cd.i && passant.j == cd.j || //or pawn, and 'en passant' or
-			space[cd.i][cd.j].getPiece()) && !space[cd.x][cd.y].getPiece()->to_take(cd))) //is another piece and pawn can beat
+		if (space[cd.x][cd.y].getPiece()->getName() != Name::pawn || (!(passant.x == cd.i //if not a pawn
+			&& passant.y == cd.j) && !(passant.i == cd.i && passant.j == cd.j) && //or pawn, and 'en passant' or
+			!space[cd.i][cd.j].getPiece()) || !space[cd.x][cd.y].getPiece()->to_take(cd)) //is another piece and pawn can beat
 			return false;
 	}
 	error = "pawn can't beat like that";

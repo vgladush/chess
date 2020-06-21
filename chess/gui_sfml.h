@@ -26,10 +26,13 @@ public:
 private:
 	void draw_help(Space& space, int x, int y); //if help turned on
 	void draw_space(IPiece* piece, Coord& crd); //chessboard display
+	void right_banner(); //options display
+	void status_bar(); //game result display
 
 	RenderWindow window;
-	Texture texture, t_board, t_help; //texture for space and other, separate texture for background and helper
-	Sprite sprite, sp_board, sp_help; //sprite for space and other, separate sprite for background and helper
+	Texture texture, t_board, t_help, t_voice; //texture for space and other, separate texture for background and helper, volume display
+	Sprite sprite, sp_board, sp_help, hint, sp_voice; //sprite for space and other, separate sprite for background and helper, hint (example for help)
 	Vector2i v2i; //for pulling out coordinates
-	bool hold, help; //pressed left mouse key, help turn on
+	Color c_beat, c_move, c_keep;//color for different situations
+	bool hold, help, volume; //pressed left mouse key, help turn on
 };
