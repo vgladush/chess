@@ -12,7 +12,8 @@ enum class Move
 	free, // can't move to space (not within reach)
 	beat, // can beat
 	empty, //can move
-	stay // the piece that begins move
+	stay, // the piece that begins move
+	special //for castling or when a pawn turns into another piece
 };
 
 enum class Game
@@ -21,6 +22,8 @@ enum class Game
 	hold, // start move 
 	relesed, //end move
 	clear, // clear helper
+	castling, //to castle
+	transf, //pawn transformation
 	exit //game over
 };
 

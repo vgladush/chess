@@ -20,7 +20,10 @@ private:
 	Gui_sfml gui;
 	Space space[8][8];
 	bool turn_w, help;
-	Coord cd;
+	Coord cd, castle, passant;
+	//'cd' for usual coordinates (currently and next position)
+	//'castle' for ñastling, x & y for white, i & j for black - left and right ñastling, 1 is true, 0 is false
+	// 'paasant' extra coord for en passant, x & y for white, i & j for black, value -1 is no pawn
 	Game gm;
 	std::string error;
 };

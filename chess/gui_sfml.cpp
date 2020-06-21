@@ -38,7 +38,7 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 				{
 					cd.x = (v2i.x - INDENT) / GRID;
 					cd.y = (v2i.y - INDENT) / GRID;
-					std::cout << "take " << cd.x << " " << cd.y << std::endl;
+					std::cerr << "take " << cd.x << " " << cd.y << std::endl;
 					if (v2i.x >= INDENT && v2i.y >= INDENT && 0 <= cd.x && cd.x < 8 && 0 <= cd.y && cd.y < 8 && space[cd.x][cd.y].getPiece())
 					{
 						hold = true;
@@ -61,7 +61,7 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 				{
 					cd.i = (v2i.x - INDENT) / GRID;
 					cd.j = (v2i.y - INDENT) / GRID;
-					std::cout << "relesed " << cd.i << " " << cd.j << std::endl;
+					std::cerr << "relesed " << cd.i << " " << cd.j << std::endl;
 					hold = false;
 					if ((cd.x != cd.i || cd.y != cd.j) && v2i.x > INDENT && v2i.y > INDENT && cd.i < 8 && 8 > cd.j)
 						return Game::relesed;
@@ -89,6 +89,8 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& err)
 		ext = { cd.x, cd.y, cd.x, cd.y };
 		if (hold) //layer on top
 			draw_space(space[cd.x][cd.y].getPiece(), ext);
+		//if (err.length())
+			//std::cout << err << std::endl;
 		window.display();
 	}
 	return Game::exit;
