@@ -99,6 +99,11 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& stat)
 			//	sound.play();
 			//}
 		}
+		if (stat == "spec")
+		{
+			play_sound(Game::transf);
+			stat.clear();
+		}
 		window.clear(Color(210, 210, 210)); //background color
 		window.draw(sp_board); //background image
 		right_banner(); //help toggle button
