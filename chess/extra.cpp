@@ -114,9 +114,43 @@ bool Chess::check_way()
 	if (space[cd.i][cd.j].getPiece() && turn_w == space[cd.i][cd.j].getPiece()->getPlayer())
 		return false;
 	
-	//if the check was successful, the piece has moved or beat another piece 
+	if (check(turn_w))
+	{
+		except = "you cannot make this move, the king will be under attack";
+		return false;
+	}
+	if (check(!turn_w))
+	{
+		except = (turn_w ? "black" : "white");
+		if (!checkmate())
+			except += "шах игроку";
+		return false;
+	}
 	except.clear();
 	
+	//if the check was successful, the piece has moved or beat another piece 
+	if (space[cd.x][cd.y].getPiece()->getName() == Name::pawn && (cd.j == 0 || cd.j == 7))
+		except = "pawn";
+	//delete space[cd.i][cd.j].getPiece();
+	//space[cd.i][cd.j].setPiece(space[cd.x][cd.y].getPiece());
+	//space[cd.x][cd.y].setPiece(nullptr);
+
+	//if was en passant
+	//if (passant.x == cd.i && passant.y == cd.j)
+		//space[cd.i][cd.j - 1].setPiece(nullptr);
+	//else if (passant.i == cd.i && passant.j == cd.j)
+		//space[cd.i][cd.j + 1].setPiece(nullptr);
+
+	if (turn_w) //throw off en passant for opponent
+		passant.i = passant.j = -1;
+	else
+		passant.x = passant.y = -1;
+
+	return true;
+}
+
+bool Chess::check(bool white, )
+{
 	IPiece* pic1 = space[cd.x][cd.y].getPiece();
 	IPiece* pic2 = space[cd.i][cd.j].getPiece();
 	
@@ -124,61 +158,21 @@ bool Chess::check_way()
 	Coord extra = cd;
 	IPiece* pic3 = nullptr;
 	IPiece* pic4 = nullptr;
-	
-	if (space[cd.x][cd.y].getPiece()->getName() == Name::pawn && (cd.j == 0 || cd.j == 7))
-		except = "pawn";
+
+	delete space[cd.x][cd.y].getPiece();
+	space[cd.x][cd.y].setPiece(space[cd.i][cd.j].getPiece());
 	delete space[cd.i][cd.j].getPiece();
-	space[cd.i][cd.j].setPiece(space[cd.x][cd.y].getPiece());
-	//delete space[cd.x][cd.y].getPiece();
-	space[cd.x][cd.y].setPiece(nullptr);
-
-	//if was en passant
-	if (passant.x == cd.i && passant.y == cd.j)
+	space[cd.i][cd.j].setPiece(pic1);
+	if (pic3)
 	{
-		extra.y = cd.j - 1;
-		pic3 = space[cd.i][cd.j - 1].getPiece();
-		delete space[cd.i][cd.j - 1].getPiece(); //???
-		space[cd.i][cd.j - 1].setPiece(nullptr);
+		delete space[extra.x][extra.y].getPiece();
+		space[extra.x][extra.y].setPiece(pic3);
 	}
-	else if (passant.i == cd.i && passant.j == cd.j)
+	if (pic4)
 	{
-		extra.y = cd.j + 1;
-		pic3 = space[cd.i][cd.j + 1].getPiece();
-		delete space[cd.i][cd.j + 1].getPiece(); // ???
-		space[cd.i][cd.j + 1].setPiece(nullptr);
+		delete space[extra.i][extra.j].getPiece();
+		space[extra.i][extra.j].setPiece(pic4);
 	}
-	if (check(turn_w))
-	{
-		except = "you cannot make this move, the king will be under attack";
-		delete space[cd.x][cd.y].getPiece();
-		space[cd.x][cd.y].setPiece(space[cd.i][cd.j].getPiece());
-		delete space[cd.i][cd.j].getPiece();
-		space[cd.i][cd.j].setPiece(pic1);
-		if (pic3)
-		{
-			delete space[extra.x][extra.y].getPiece();
-			space[extra.x][extra.y].setPiece(pic3);
-		}
-		if (pic4)
-		{
-			delete space[extra.i][extra.j].getPiece();
-			space[extra.i][extra.j].setPiece(pic4);
-		}
-
-		//delete pic1;
-		//delete pic2;
-		//delete pic3;
-		//delete pic4;
-	}
-	else if (check(!turn_w))
-	{
-	}
-	if (turn_w) //throw off en passant for opponent
-		passant.i = passant.j = -1;
-	else
-		passant.x = passant.y = -1;
-
-	return true;
 }
 
 void Chess::start()
