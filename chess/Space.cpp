@@ -4,27 +4,14 @@ Space::Space(IPiece* piece) : cell(piece), move(Move::free) { }
 
 Space::~Space()
 {
-    if (cell)
-        delete cell;
+    delete cell;
     cell = nullptr;
 }
 
-void Space::setMove(Move mv)
-{
-    move = mv;
-}
+void Space::setMove(Move mv) { move = mv; }
 
-Move Space::getMove()
-{
-    return move;
-}
+Move Space::getMove() { return move; }
 
-void Space::setPiece(IPiece* cl)
-{
-    cell = cl;
-}
+void Space::setPiece(IPiece* cl) { cell = cl; }
 
-IPiece *Space::getPiece()
-{
-    return cell;
-}
+IPiece *Space::getPiece() { return cell; }

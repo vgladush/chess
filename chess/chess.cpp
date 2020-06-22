@@ -1,6 +1,6 @@
 #include "chess.h"
 
-Chess::Chess() : turn_w(true), help(false)
+Chess::Chess() : turn_w(true), help(false), gm(Game::start)
 {
 	cd = { 0, 0, 0, 0};
 	castle = { 1, 1, 1, 1 };
@@ -12,14 +12,34 @@ Chess::~Chess() { }
 void Chess::game()
 {
 	start();
-	while ((gm = gui.draw_board(space, cd, error)) != Game::exit) // while open window
+	while ((gm = gui.draw_board(space, cd, except)) != Game::exit) // while open window
 	{
 		if (gm == Game::helper)
 		{
 			help = !help;
 			continue;
 		}
-		if (help && space[cd.x][cd.y].getPiece()->getPlayer() == turn_w) //if help is on
+		if (gm == Game::transf && cd.x > 1 && cd.x < 6) //pawn transformation, replacing a pawn with a selected piece
+		{
+			delete space[cd.i][cd.j].getPiece();
+			if (cd.x == 2)
+				space[cd.i][cd.j].setPiece(new Queen(!turn_w));
+			else if (cd.x == 3)
+				space[cd.i][cd.j].setPiece(new Bishop(!turn_w));
+			else if (cd.x == 4)
+				space[cd.i][cd.j].setPiece(new Knight(!turn_w));
+			else
+				space[cd.i][cd.j].setPiece(new Rook(!turn_w));
+			except.clear();
+
+			//clear helper
+			space[cd.i - 2][cd.j].setMove(Move::free);
+			space[cd.i - 1][cd.j].setMove(Move::free);
+			space[cd.i][cd.j].setMove(Move::free);
+			space[cd.i + 1][cd.j].setMove(Move::free);
+			space[cd.i + 2][cd.j].setMove(Move::free);
+		}
+		else if (help && space[cd.x][cd.y].getPiece()->getPlayer() == turn_w) //if help is on
 		{
 			if (gm == Game::hold)
 				check_movement(false); //after hold, calculate the options for moves
@@ -28,33 +48,35 @@ void Chess::game()
 		}
 		//if not player turn
 		if (gm == Game::relesed && space[cd.x][cd.y].getPiece()->getPlayer() != turn_w)
-			error = "now the move is " + std::string(turn_w ? "white" : "black");
+			except = "now the move is " + std::string(turn_w ? "white" : "black");
 		//after released, check player for correctness
 		else if (gm == Game::relesed && check_way())
 			turn_w = !turn_w; //change player
+		if (gm == Game::start)
+			start();
 	}
 }
 
 bool Chess::check_way()
 {
-	error.clear();
+	except.clear();
 	if (!space[cd.x][cd.y].getPiece()->move_to(cd))
 	{
 		//check whether the piece can walk like that
-		error = "this piece can't move like that";
+		except = "this piece can't move like that";
 		if (space[cd.x][cd.y].getPiece()->getName() != Name::pawn || (!(passant.x == cd.i //if not a pawn
 			&& passant.y == cd.j) && !(passant.i == cd.i && passant.j == cd.j) && //or pawn, and 'en passant' or
 			!space[cd.i][cd.j].getPiece()) || !space[cd.x][cd.y].getPiece()->to_take(cd)) //is another piece and pawn can beat
 			return false;
 	}
-	error = "pawn can't beat like that";
+	except = "pawn can't beat like that";
 	if (space[cd.i][cd.j].getPiece() && space[cd.x][cd.y].getPiece()->getName() == Name::pawn
 		&& space[cd.x][cd.y].getPiece()->move_to(cd)) //pawn can't beat in a straight line
 		return false;
 	if (space[cd.x][cd.y].getPiece()->getName() != Name::knight && space[cd.x][cd.y].getPiece()->getName() != Name::king)
 	{
 		//checking the path to the first oncoming piece or the end of the chessboard
-		error = "there is a piece or pieces in the way";
+		except = "there is a piece or pieces in the way";
 		if (cd.x == cd.i) //horizontal
 		{
 			int my = (cd.y > cd.j ? -1 : 1);
@@ -87,14 +109,18 @@ bool Chess::check_way()
 		}
 	}
 
-	error = "you can't beat own piece";
+	except = "you can't beat own piece";
 	//checking if there was an attempt to beat own pawn
 	if (space[cd.i][cd.j].getPiece() && turn_w == space[cd.i][cd.j].getPiece()->getPlayer())
 		return false;
 	
 	//if the check was successful, the piece has moved or beat another piece 
-	error.clear();
+	except.clear();
+	if (space[cd.x][cd.y].getPiece()->getName() == Name::pawn && (cd.j == 0 || cd.j == 7))
+		except = "pawn";
+	delete space[cd.i][cd.j].getPiece();
 	space[cd.i][cd.j].setPiece(space[cd.x][cd.y].getPiece());
+	//delete space[cd.x][cd.y].getPiece();
 	space[cd.x][cd.y].setPiece(nullptr);
 
 	//if was en passant
@@ -113,6 +139,16 @@ bool Chess::check_way()
 
 void Chess::start()
 {
+	//clear the chessboard
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			delete space[i][j].getPiece();
+			space[i][j].setPiece(nullptr);
+		}
+	}
+	
 	//fill the chessboard with pieces
 	space[0][0].setPiece(new Rook(false));
 	space[1][0].setPiece(new Knight(false));
@@ -122,23 +158,11 @@ void Chess::start()
 	space[5][0].setPiece(new Bishop(false));
 	space[6][0].setPiece(new Knight(false));
 	space[7][0].setPiece(new Rook(false));
-	space[0][1].setPiece(new Pawn(false));
-	space[1][1].setPiece(new Pawn(false));
-	space[2][1].setPiece(new Pawn(false));
-	space[3][1].setPiece(new Pawn(false));
-	space[4][1].setPiece(new Pawn(false));
-	space[5][1].setPiece(new Pawn(false));
-	space[6][1].setPiece(new Pawn(false));
-	space[7][1].setPiece(new Pawn(false));
+	for (int i = 0; i < 8; ++i)
+		space[i][1].setPiece(new Pawn(false));
 
-	space[0][6].setPiece(new Pawn);
-	space[1][6].setPiece(new Pawn);
-	space[2][6].setPiece(new Pawn);
-	space[3][6].setPiece(new Pawn);
-	space[4][6].setPiece(new Pawn);
-	space[5][6].setPiece(new Pawn);
-	space[6][6].setPiece(new Pawn);
-	space[7][6].setPiece(new Pawn);
+	for (int i = 0; i < 8; ++i)
+		space[i][6].setPiece(new Pawn);
 	space[0][7].setPiece(new Rook);
 	space[1][7].setPiece(new Knight);
 	space[2][7].setPiece(new Bishop);
@@ -149,6 +173,7 @@ void Chess::start()
 	space[7][7].setPiece(new Rook);
 
 }
+
 void Chess::set_movement(int plx, int ply, bool clear)
 {
 	Coord ex{ cd.x, cd.y, cd.x + plx, cd.y + ply }; //extra coordinates
@@ -159,7 +184,7 @@ void Chess::set_movement(int plx, int ply, bool clear)
 		((space[ex.i][ex.j].getPiece() && turn_w != space[ex.i][ex.j].getPiece()->getPlayer()) //if pawn can beat another piece
 		|| (turn_w && ex.i == passant.i && ex.j == passant.j) //en passant for white
 		|| (!turn_w && ex.i == passant.x && ex.j == passant.y))) //en passant for black
-		space[ex.i][ex.j].setMove((clear ? Move::free : Move::beat));
+		space[ex.i][ex.j].setMove((clear ? Move::free : (ex.j == 0 || ex.j == 7 ? Move::special : Move::beat)));
 	//extra move for knight
 	if (space[cd.x][cd.y].getPiece()->getName() == Name::knight)
 	{
@@ -176,14 +201,18 @@ void Chess::set_movement(int plx, int ply, bool clear)
 
 	for ( ; 0 <= ex.i && ex.i < 8 && 8 > ex.j && ex.j >= 0; ex.i += plx, ex.j += ply) //check can move or beat
 	{
-		if (!space[cd.x][cd.y].getPiece()->move_to(ex))
+		if (!space[cd.x][cd.y].getPiece()->move_to(ex)) //can't move
 			return;
-		if (!space[ex.i][ex.j].getPiece())
-			space[ex.i][ex.j].setMove((clear ? Move::free : Move::empty));
+		if (!space[ex.i][ex.j].getPiece()) //no piece
+		{
+			space[ex.i][ex.j].setMove((clear ? Move::free : Move::empty)); //free way
+			if (space[cd.x][cd.y].getPiece()->getName() == Name::pawn && (ex.j == 0 || ex.j == 7))
+				space[ex.i][ex.j].setMove(Move::special);
+		}
 		else
 		{
-			if (space[ex.i][ex.j].getPiece()->getPlayer() != turn_w
-				&& space[cd.x][cd.y].getPiece()->getName() != Name::pawn)
+			if (space[ex.i][ex.j].getPiece()->getPlayer() != turn_w &&
+				space[cd.x][cd.y].getPiece()->getName() != Name::pawn)
 				space[ex.i][ex.j].setMove((clear ? Move::free : Move::beat));
 			return;
 		}

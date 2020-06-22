@@ -25,7 +25,6 @@ public:
 
 	IPiece(bool player, Name tp) { first_player = player; type = tp; }
 	virtual ~IPiece() = default;
-
 	virtual bool move_to(Coord& cd) const = 0; //check, can move
 	virtual bool to_take(Coord& cd) const = 0; //check, can take
 	void setPlayer(bool player) { first_player = player; }

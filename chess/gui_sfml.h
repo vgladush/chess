@@ -21,18 +21,23 @@ public:
 	Gui_sfml();
 	~Gui_sfml();
 
-	Game draw_board(Space space[8][8], Coord& cd, std::string &err); //main method
+	Game draw_board(Space space[8][8], Coord& cd, std::string& stat); //main method
 
 private:
 	void draw_help(Space& space, int x, int y); //if help turned on
 	void draw_space(IPiece* piece, Coord& crd); //chessboard display
 	void right_banner(); //options display
-	void status_bar(); //game result display
+	void status_bar(std::string& stat); //game result display
+	void play_sound(Game gm); //game result display
 
 	RenderWindow window;
 	Texture texture, t_board, t_help, t_voice; //texture for space and other, separate texture for background and helper, volume display
 	Sprite sprite, sp_board, sp_help, hint, sp_voice; //sprite for space and other, separate sprite for background and helper, hint (example for help)
 	Vector2i v2i; //for pulling out coordinates
-	Color c_beat, c_move, c_keep;//color for different situations
+	Color c_beat, c_move, c_keep, c_spec;//color for different situations
+	SoundBuffer sb; //buffer and
+	Sound sound; //sound for audio files
+	Font font; //font for text
+	Text text; //text to display hint and status
 	bool hold, help, volume; //pressed left mouse key, help turn on
 };

@@ -18,6 +18,7 @@ enum class Move
 
 enum class Game
 {
+	start, //start or restart
 	helper, // help, turn on or turn off
 	hold, // start move 
 	relesed, //end move
