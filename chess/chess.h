@@ -13,14 +13,16 @@ public:
 
 private:
 
-	bool check_way(); //free path to the goal
+	std::string check_way(); //free path to the goal
 	void start(); //fill chessboard befor start the game
 	void set_movement(int plx, int ply, bool clear);
 	//check if there is another piece in the path and set help for moving
 	
-	bool check(bool move);
+	bool castling(bool move);
+	bool check(bool move, Coord &ex); //check, 'ex' temporary coord for cheking
+	bool can_beat(Coord& crd);
+	bool check_king(int x = -1, int y = 0); //can something beat the king -1 - need to find the king
 	bool checkmate();
-	bool check_king();
 
 	Gui_sfml gui; //engine
 	Space space[8][8];
@@ -28,7 +30,7 @@ private:
 	Coord cd, cr, castle;
 	//'cd' for usual coordinates (currently and next position)
 	//'cr' for 'paasant' extra coord for en passant, x & y for white, i & j for black, value -1 is no pawn
-	//'castle 'for 'castle' for castling, x & y for white, i & j for black - left and right castling, 1 is true, 0 is false
+	//'castle' for castling, x & y for white, i & j for black - left and right castling, 1 is true, 0 is false
 	Game gm;
 	std::string except; //exception (error or unusual situations)
 };
