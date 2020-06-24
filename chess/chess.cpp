@@ -61,10 +61,10 @@ std::string Chess::check_way()
 	if (!space[cd.x][cd.y].getPiece()->move_to(cd))
 	{
 		//check whether the piece can walk like that
-		if (!castling(true) && (space[cd.x][cd.y].getPiece()->getName() != Name::pawn || (!(cr.x == cd.i //if castling, not a pawn
+		if (!castling(true, cd) && (space[cd.x][cd.y].getPiece()->getName() != Name::pawn || (!(cr.x == cd.i //if castling, not a pawn
 			&& cr.y == cd.j) && !(cr.i == cd.i && cr.j == cd.j) && //or pawn, and 'en passant' or
 			!space[cd.i][cd.j].getPiece()) || !space[cd.x][cd.y].getPiece()->to_take(cd))) //is another piece and pawn can't beat
-			return "this piece can't move like that";
+			return (except.length() ? except : "this piece can't move like that");
 	}
 	if (space[cd.i][cd.j].getPiece() && space[cd.x][cd.y].getPiece()->getName() == Name::pawn
 		&& space[cd.x][cd.y].getPiece()->move_to(cd)) //pawn can't beat in a straight line
@@ -204,9 +204,12 @@ void Chess::set_movement(int plx, int ply, bool clear)
 			ex.j += plx + ply;
 		}
 	}
-	castling(false);
-	for ( ; 0 <= ex.i && ex.i < 8 && 8 > ex.j && ex.j >= 0; ex.i += plx, ex.j += ply) //check can move or beat
+
+	//check can move or beat
+	for ( ; 0 <= ex.i && ex.i < 8 && 8 > ex.j && ex.j >= 0; ex.i += plx, ex.j += ply) 
 	{
+		if (castling(false, ex))
+			space[ex.i][ex.j].setMove((clear || check(false, ex) ? Move::free : Move::beat));
 		if (!space[cd.x][cd.y].getPiece()->move_to(ex)) //can't move
 			return;
 		if (!space[ex.i][ex.j].getPiece()) //no piece
@@ -225,35 +228,28 @@ void Chess::set_movement(int plx, int ply, bool clear)
 	}
 }
 
-bool Chess::castling(bool move)
+bool Chess::castling(bool move, Coord& crd)
 {
-	if (space[cd.x][cd.y].getPiece()->getName() != Name::king || check_king(cd.x, cd.y))
+	if (space[crd.x][crd.y].getPiece()->getName() != Name::king)
 		return false;
-	bool can = false;
-	if (cd.i == 2 && (castle.x && turn_w) || (castle.i && !turn_w) && !space[cd.x - 1][cd.y].getPiece()
-		&& !space[cd.x - 2][cd.y].getPiece() && !space[cd.x - 3][cd.y].getPiece()	//long castling
-		&& !check_king(cd.x - 1, cd.y) && !check_king(cd.i, cd.y))
+	int can = 0; // -1 left, 1 right, 0 false
+	if (crd.i == 2 && ((crd.j == 7 && castle.x && turn_w) || (crd.j == 0 && castle.i && !turn_w)) && //long castling
+		!space[crd.x - 1][crd.y].getPiece() && !space[crd.x - 2][crd.y].getPiece() && !space[crd.x - 3][crd.y].getPiece())
+		can = -1;
+	if (crd.i == 6 && ((crd.j == 7 && castle.y && turn_w) || (crd.j == 0 && castle.j && !turn_w))
+		&& !space[crd.x + 1][crd.y].getPiece() && !space[crd.x + 2][crd.y].getPiece()) //short castling
+		can = 1;
+	if (can && (check_king(crd.x, crd.y) || check_king(crd.x + can, crd.y) || check_king(crd.i, crd.y)))
 	{
 		if (move)
-		{
-			delete space[cd.x - 1][cd.y].getPiece();
-			space[cd.x - 1][cd.y].setPiece(space[0][cd.y].getPiece());
-			space[0][cd.y].setPiece(nullptr);
-		}
-		space[cd.x - 2][cd.y].setMove((gm == Game::hold ? Move::special : Move::free));
-		can = true;
+			except = "you can't castle, the king or the path under attack";
+		return false;
 	}
-	if (cd.i == 6 && (castle.y && turn_w) || (castle.j && !turn_w) && !space[cd.x + 1][cd.y].getPiece()
-		&& !space[cd.x + 2][cd.y].getPiece() && !check_king(cd.x + 1, cd.y) && !check_king(cd.i, cd.y)) //short castling
+	if (can && move)
 	{
-		if (move && !can)
-		{
-			delete space[cd.x + 1][cd.y].getPiece();
-			space[cd.x + 1][cd.y].setPiece(space[7][cd.y].getPiece());
-			space[7][cd.y].setPiece(nullptr);
-		}
-		space[cd.x + 2][cd.y].setMove((gm == Game::hold ? Move::special : Move::free));
-		can = true;
+		delete space[crd.x + can][crd.y].getPiece();
+		space[crd.x + can][crd.y].setPiece(space[(can == 1 ? 7 : 0)][crd.y].getPiece());
+		space[(can == 1 ? 7 : 0)][crd.y].setPiece(nullptr);
 	}
 
 	return can;

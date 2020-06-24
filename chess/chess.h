@@ -18,7 +18,7 @@ private:
 	void set_movement(int plx, int ply, bool clear);
 	//check if there is another piece in the path and set help for moving
 	
-	bool castling(bool move);
+	bool castling(bool move, Coord& crd);
 	bool check(bool move, Coord &ex); //check, 'ex' temporary coord for cheking
 	bool can_beat(Coord& crd);
 	bool check_king(int x = -1, int y = 0); //can something beat the king -1 - need to find the king

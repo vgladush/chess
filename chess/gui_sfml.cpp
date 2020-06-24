@@ -53,7 +53,7 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& stat)
 			}
 			if (event.type == Event::MouseButtonPressed) // if pressed:
 			{
-				if (event.key.code == Mouse::Left) // left mouse button
+				if (event.key.code == Mouse::Left && !hold) // left mouse button
 				{
 					cd.x = (v2i.x - INDENT) / GRID;
 					cd.y = (v2i.y - INDENT) / GRID;
