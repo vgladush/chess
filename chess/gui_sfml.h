@@ -35,9 +35,9 @@ private:
 	Sprite sprite, sp_board, sp_help, hint, sp_voice; //sprite for space and other, separate sprite for background and helper, hint (example for help)
 	Vector2i v2i; //for pulling out coordinates
 	Color c_beat, c_move, c_keep, c_spec;//color for different situations
-	SoundBuffer sb; //buffer and
+	SoundBuffer sb; //buffer
 	Sound sound; //sound for audio files
 	Font font; //font for text
 	Text text; //text to display hint and status
-	bool hold, help, volume; //pressed left mouse key, help turn on
+	bool hold, help, volume, start; //pressed left mouse key, help turn on, voice, start new game
 };

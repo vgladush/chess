@@ -2,7 +2,7 @@
 #include "Space.h"
 #include <iostream>
 
-Gui_sfml::Gui_sfml() : hold(false), help(false), volume(false)
+Gui_sfml::Gui_sfml() : hold(false), help(false), volume(false), start(false)
 {
 	window.create(VideoMode(WIDTH, HEIGHT), "Chess (C++ with SFML)", Style::Close);
 
@@ -51,58 +51,48 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& stat)
 				window.close();
 				return Game::exit;
 			}
-			if (event.type == Event::MouseButtonPressed) // if pressed:
+			if (event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left && !hold) // if pressed left mouse button
 			{
-				if (event.key.code == Mouse::Left && !hold) // left mouse button
+				cd.x = (v2i.x - INDENT) / GRID;
+				cd.y = (v2i.y - INDENT) / GRID;
+				if (stat != "pawn" && !start && v2i.x >= INDENT && v2i.y >= INDENT && 0 <= cd.x && cd.x < 8 && 0 <= cd.y && cd.y < 8 && space[cd.x][cd.y].getPiece())
 				{
-					cd.x = (v2i.x - INDENT) / GRID;
-					cd.y = (v2i.y - INDENT) / GRID;
-					std::cerr << "take " << cd.x << " " << cd.y << std::endl;
-					if (stat != "pawn" && v2i.x >= INDENT && v2i.y >= INDENT && 0 <= cd.x && cd.x < 8 && 0 <= cd.y && cd.y < 8 && space[cd.x][cd.y].getPiece())
-					{
-						hold = true;
-						play_sound(Game::hold);
-						return Game::hold;
-					}
-					else if (sp_help.getGlobalBounds().contains(v2i.x, v2i.y))
-					{
-						play_sound(Game::helper);
-						help = !help;
-						return Game::helper;
-					}
-					else if (sp_voice.getGlobalBounds().contains(v2i.x, v2i.y))
-						volume = !volume;
+					hold = true;
+					play_sound(Game::hold);
+					return Game::hold;
 				}
+				else if (sp_help.getGlobalBounds().contains(v2i.x, v2i.y))
+				{
+					play_sound(Game::helper);
+					help = !help;
+					return Game::helper;
+				}
+				else if (sp_voice.getGlobalBounds().contains(v2i.x, v2i.y))
+					volume = !volume;
 			}
 			if (event.type == Event::MouseButtonReleased && event.key.code == Mouse::Left) // if released:
 			{
-				std::cerr << "relesed " << int((v2i.x - INDENT) / GRID) << " " << int((v2i.y - INDENT) / GRID) << std::endl;
-				if (stat == "pawn" && cd.x == int((v2i.x - INDENT) / GRID) && cd.y == 4)
+				if (start && sp_board.getGlobalBounds().contains(v2i.x, v2i.y))
+				{
+					start = false;
+					play_sound(Game::start);
+					return Game::start;
+				}
+				if (stat == "pawn" && cd.x == int((v2i.x - INDENT) / GRID) && cd.y == 4 && cd.x > 1 && cd.x < 6)
+				{
+					play_sound(Game::transf);
+					stat.clear();
 					return Game::transf;
+				}
 				if (hold) // left mouse button
 				{
 					cd.i = (v2i.x - INDENT) / GRID;
 					cd.j = (v2i.y - INDENT) / GRID;
 					hold = false;
 					play_sound(Game::relesed);
-					if ((cd.x != cd.i || cd.y != cd.j) && v2i.x > INDENT && v2i.y > INDENT && cd.i < 8 && 8 > cd.j)
-						return Game::relesed;
-					else
-						return Game::clear;
+					return (((cd.x != cd.i || cd.y != cd.j) && v2i.x > INDENT && v2i.y > INDENT && cd.i < 8 && 8 > cd.j) ? Game::relesed : Game::clear);
 				}
 			}
-			//if (start)
-			//{
-			//	value = !value;
-			//	sb.loadFromFile("resource/button.wav");
-			//	sound.setBuffer(sb);
-			//	sound.play();
-			//}
-		}
-		if (stat == "spec")
-		{
-			play_sound(Game::transf);
-			stat.clear();
 		}
 		window.clear(Color(210, 210, 210)); //background color
 		window.draw(sp_board); //background image
@@ -229,29 +219,31 @@ void Gui_sfml::right_banner()
 
 void Gui_sfml::status_bar(std::string& stat)
 {
-	if (stat == "Black" || stat == "White")
+	if (stat == "Black won!" || stat == "White won!" || stat == "Stalemate!\n   Draw!")
 	{
 		text.setCharacterSize(120);
-		text.setPosition(81, 264);
+		if (stat == "Stalemate!\n   Draw!")
+			text.setPosition(75, 204);
+		else
+			text.setPosition(63, 279);
 		text.setStyle(Text::Bold);
 		text.setFillColor(Color(30, 150, 30));
-		text.setString(stat + " won!");
+		text.setString(stat);
 		window.draw(text);
 		text.setFillColor(Color(0, 0, 0));
 		text.setStyle(Text::Regular);
 		text.setPosition(42, 726);
 		text.setCharacterSize(42);
-		text.setString("left click on the chessboard to start a new game");
+		text.setString("Left click on the chessboard to start a new game");
+		start = true;
 	}
 	else
 	{
 		text.setPosition(30, 732);
 		if (stat == "pawn")
-			text.setString("please select a piece to replace the pawn");
+			text.setString("Please select a piece to replace the pawn");
 		else
-		{
 			text.setString(stat);
-		}
 	}
 	window.draw(text);
 }
