@@ -20,5 +20,5 @@
 - f) Copy openal32.dll and all *-d.dll files from 'C:\SFML\bin' to project Debug direcectory (C:\projects\Debug), then copy openal32.dll and all *.dll (without '-d') files from 'C:\SFML\bin' to project Release direcectory (C:\projects\Release)
 
 ### Sample
-
+###### soon there will be all the details of the game and its examples
 ![](https://github.com/vgladush/resources/blob/master/chess/chess.gif)
