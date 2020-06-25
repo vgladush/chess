@@ -31,7 +31,7 @@ Gui_sfml::Gui_sfml() : hold(false), help(false), volume(false)
 	c_spec = { 70, 50, 230, 90 };
 
 	font.loadFromFile("resource/font.ttf");
-	text.setCharacterSize(42);
+	text.setCharacterSize(36);
 	text.setFillColor(Color(0, 0, 0));
 	text.setFont(font);
 }
@@ -141,6 +141,8 @@ Game Gui_sfml::draw_board(Space space[8][8], Coord& cd, std::string& stat)
 			if (hold) //layer on top
 				draw_space(space[cd.x][cd.y].getPiece(), ext);
 		}
+		if (hold)
+			stat.clear();
 		status_bar(stat);
 		window.display();
 	}
@@ -178,6 +180,7 @@ void Gui_sfml::draw_space(IPiece* piece, Coord& crd)
 
 void Gui_sfml::right_banner()
 {
+	text.setCharacterSize(42);
 	sp_voice.setTextureRect(IntRect(0, 0, (volume ? 120 : 65), 122));
 	window.draw(sp_voice);
 	sp_help.setTextureRect(IntRect(90, (help ? 50 : 990), 1480, 570));
@@ -221,17 +224,18 @@ void Gui_sfml::right_banner()
 	text.setPosition(818, 640);
 	text.setString("spec");
 	window.draw(text);
+	text.setCharacterSize(36);
 }
 
 void Gui_sfml::status_bar(std::string& stat)
 {
-	if (stat == "black" || stat == "white")
+	if (stat == "Black" || stat == "White")
 	{
 		text.setCharacterSize(120);
 		text.setPosition(81, 264);
 		text.setStyle(Text::Bold);
 		text.setFillColor(Color(30, 150, 30));
-		text.setString(stat + " won");
+		text.setString(stat + " won!");
 		window.draw(text);
 		text.setFillColor(Color(0, 0, 0));
 		text.setStyle(Text::Regular);
@@ -241,11 +245,13 @@ void Gui_sfml::status_bar(std::string& stat)
 	}
 	else
 	{
-		text.setPosition(42, 726);
+		text.setPosition(30, 732);
 		if (stat == "pawn")
 			text.setString("please select a piece to replace the pawn");
 		else
+		{
 			text.setString(stat);
+		}
 	}
 	window.draw(text);
 }
