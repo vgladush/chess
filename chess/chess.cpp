@@ -51,7 +51,7 @@ void Chess::game()
 		//after released, check player for correctness
 		else if (gm == Game::relesed || gm == Game::transf)
 		{
-			except = (gm == Game::transf ? except : check_way());
+			except = (gm == Game::transf ? check_king() ? "check" : except : check_way());
 			if (except.length() && except != "check" && except != "pawn")
 				except += std::string(turn_w ? ". White" : ". Black") + ", make your move!";
 			else
